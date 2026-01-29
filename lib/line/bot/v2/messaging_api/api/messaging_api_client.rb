@@ -2852,13 +2852,13 @@ module Line
             response_body
           end
 
-          # Send LINE notification message
+          # Send LINE notification message (flexible)
           # This requests to <code>POST https://api.line.me/bot/pnp/push</code>
           # This returns an array containing response, HTTP status code, and header in order. Please specify all header keys in lowercase.
           #
           # @param pnp_messages_request [PnpMessagesRequest] 
           # @param x_line_delivery_tag [String, nil] String returned in the delivery.data property of the delivery completion event via Webhook.
-          # @see https://developers.line.biz/en/reference/partner-docs/#send-line-notification-message
+          # @see https://developers.line.biz/en/reference/line-notification-messages/#send-line-notification-message-flexible
           # @return [Array((String|nil), Integer, Hash{String => String})] when HTTP status code is 200
           # @return [Array(Line::Bot::V2::MessagingApi::ErrorResponse, Integer, Hash{String => String})] when HTTP status code is 422
           # @return [Array((String|nil), Integer, Hash{String => String})] when other HTTP status code is returned. String is HTTP response body itself.
@@ -2892,13 +2892,13 @@ module Line
             end
           end
 
-          # Send LINE notification message
+          # Send LINE notification message (flexible)
           # This requests to <code>POST https://api.line.me/bot/pnp/push</code>
           # When you want to get HTTP status code or response headers, use {#push_messages_by_phone_with_http_info} instead of this.
           #
           # @param pnp_messages_request [PnpMessagesRequest] 
           # @param x_line_delivery_tag [String, nil] String returned in the delivery.data property of the delivery completion event via Webhook.
-          # @see https://developers.line.biz/en/reference/partner-docs/#send-line-notification-message
+          # @see https://developers.line.biz/en/reference/line-notification-messages/#send-line-notification-message-flexible
           # @return [String, nil] when HTTP status code is 200
           # @return [Line::Bot::V2::MessagingApi::ErrorResponse] when HTTP status code is 422
           # @return [String, nil] when other HTTP status code is returned. This String is HTTP response body itself.
@@ -2908,6 +2908,68 @@ module Line
           )
             response_body, _status_code, _headers = push_messages_by_phone_with_http_info(
               pnp_messages_request: pnp_messages_request,
+              x_line_delivery_tag: x_line_delivery_tag
+            )
+
+            response_body
+          end
+
+          # Send LINE notification message (template)
+          # This requests to <code>POST https://api.line.me/v2/bot/message/pnp/templated/push</code>
+          # This returns an array containing response, HTTP status code, and header in order. Please specify all header keys in lowercase.
+          #
+          # @param pnp_message_template_request [PnpMessageTemplateRequest] 
+          # @param x_line_delivery_tag [String, nil] String returned in the delivery.data property of the delivery completion event via Webhook.
+          # @see https://developers.line.biz/en/reference/line-notification-messages/#send-line-notification-message-template
+          # @return [Array((String|nil), Integer, Hash{String => String})] when HTTP status code is 200
+          # @return [Array(Line::Bot::V2::MessagingApi::ErrorResponse, Integer, Hash{String => String})] when HTTP status code is 422
+          # @return [Array((String|nil), Integer, Hash{String => String})] when other HTTP status code is returned. String is HTTP response body itself.
+          def push_notification_template_with_http_info( # steep:ignore MethodBodyTypeMismatch 
+            pnp_message_template_request:, 
+            x_line_delivery_tag: nil
+          )
+            path = "/v2/bot/message/pnp/templated/push"
+            header_params = {
+              "X-Line-Delivery-Tag": x_line_delivery_tag
+            }.compact
+
+            response = @http_client.post(
+              path: path,
+              body_params: pnp_message_template_request,
+              headers: header_params
+            )
+
+            case response.code.to_i
+            when 200
+              [response.body, 200, response.each_header.to_h]
+            when 422
+              json = Line::Bot::V2::Utils.deep_underscore(JSON.parse(response.body))
+              json.transform_keys! do |key|
+                Line::Bot::V2::RESERVED_WORDS.include?(key) ? "_#{key}".to_sym : key
+              end
+              response_body = Line::Bot::V2::MessagingApi::ErrorResponse.create(json) # steep:ignore InsufficientKeywordArguments
+              [response_body, 422, response.each_header.to_h]
+            else
+              [response.body, response.code.to_i, response.each_header.to_h]
+            end
+          end
+
+          # Send LINE notification message (template)
+          # This requests to <code>POST https://api.line.me/v2/bot/message/pnp/templated/push</code>
+          # When you want to get HTTP status code or response headers, use {#push_notification_template_with_http_info} instead of this.
+          #
+          # @param pnp_message_template_request [PnpMessageTemplateRequest] 
+          # @param x_line_delivery_tag [String, nil] String returned in the delivery.data property of the delivery completion event via Webhook.
+          # @see https://developers.line.biz/en/reference/line-notification-messages/#send-line-notification-message-template
+          # @return [String, nil] when HTTP status code is 200
+          # @return [Line::Bot::V2::MessagingApi::ErrorResponse] when HTTP status code is 422
+          # @return [String, nil] when other HTTP status code is returned. This String is HTTP response body itself.
+          def push_notification_template(
+            pnp_message_template_request:,
+            x_line_delivery_tag: nil
+          )
+            response_body, _status_code, _headers = push_notification_template_with_http_info(
+              pnp_message_template_request: pnp_message_template_request,
               x_line_delivery_tag: x_line_delivery_tag
             )
 

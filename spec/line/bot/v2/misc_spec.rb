@@ -987,6 +987,101 @@ describe 'misc' do
     end
   end
 
+  describe 'POST /v2/bot/message/pnp/templated/push' do
+    let(:endpoint_url) { 'https://api.line.me/v2/bot/message/pnp/templated/push' }
+    let(:client) { Line::Bot::V2::MessagingApi::ApiClient.new(channel_access_token: 'test-channel-access-token') }
+    let(:response_body) do
+      {}.to_json
+    end
+    let(:response_code) { 202 }
+
+    it 'response - success - using Line::Bot::V2::MessagingApi::PnpMessageTemplateRequest' do
+      stub_request(:post, endpoint_url)
+        .with(
+          headers: {
+            'Authorization' => "Bearer test-channel-access-token"
+          },
+          body: {
+            "templateKey" => "shipment_completed_ja",
+            "to" => "USER_ID",
+            "body" => {
+              "emphasizedItem" => { "itemKey" => "date_002_ja", "content" => "Jan 1, 2026" },
+              "items" => [
+                { "itemKey" => "time_range_001_ja", "content" => "A.M." }
+              ],
+              "buttons" => [
+                { "buttonKey" => "contact_ja", "url" => "https://example.com/ContactUs/" }
+              ]
+            },
+            "notificationDisabled" => false
+          }.to_json
+        )
+        .to_return(status: response_code, body: response_body, headers: { 'Content-Type' => 'application/json' })
+
+      request = Line::Bot::V2::MessagingApi::PnpMessageTemplateRequest.new(
+        to: 'USER_ID',
+        template_key: 'shipment_completed_ja',
+        body: {
+          emphasized_item: { item_key: 'date_002_ja', content: 'Jan 1, 2026' },
+          items: [
+            { item_key: 'time_range_001_ja', content: 'A.M.' }
+          ],
+          buttons: [
+            { button_key: 'contact_ja', url: 'https://example.com/ContactUs/' }
+          ]
+        },
+        notification_disabled: false
+      )
+      body, status_code, headers = client.push_notification_template_with_http_info(pnp_message_template_request: request)
+
+      expect(status_code).to eq(202)
+      expect(body).to eq(response_body)
+    end
+
+    it 'response - success - using hash (not recommended way)', rbs_test: :skip do
+      stub_request(:post, endpoint_url)
+        .with(
+          headers: {
+            'Authorization' => "Bearer test-channel-access-token"
+          },
+          body: {
+            "templateKey" => "shipment_completed_ja",
+            "to" => "USER_ID",
+            "body" => {
+              "emphasizedItem" => { "itemKey" => "date_002_ja", "content" => "Jan 1, 2026" },
+              "items" => [
+                { "itemKey" => "time_range_001_ja", "content" => "A.M." }
+              ],
+              "buttons" => [
+                { "buttonKey" => "contact_ja", "url" => "https://example.com/ContactUs/" }
+              ]
+            },
+            "notificationDisabled" => false
+          }.to_json
+        )
+        .to_return(status: response_code, body: response_body, headers: { 'Content-Type' => 'application/json' })
+
+      request = {
+        "templateKey" => "shipment_completed_ja",
+        "to" => "USER_ID",
+        "body" => {
+          "emphasizedItem" => { "itemKey" => "date_002_ja", "content" => "Jan 1, 2026" },
+          "items" => [
+            { "itemKey" => "time_range_001_ja", "content" => "A.M." }
+          ],
+          "buttons" => [
+            { "buttonKey" => "contact_ja", "url" => "https://example.com/ContactUs/" }
+          ]
+        },
+        "notificationDisabled" => false
+      }
+      body, status_code, headers = client.push_notification_template_with_http_info(pnp_message_template_request: request)
+
+      expect(status_code).to eq(202)
+      expect(body).to eq(response_body)
+    end
+  end
+
   describe 'POST /v2/bot/message/broadcast' do
     let(:client) { Line::Bot::V2::MessagingApi::ApiClient.new(channel_access_token: 'test-channel-access-token') }
     let(:response_body) { {}.to_json } # empty json
