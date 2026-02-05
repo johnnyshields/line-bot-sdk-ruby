@@ -139,6 +139,11 @@ model/normal_acquisition_condition_response.rbs
 model/number_of_messages_response.rbs
 model/operator_demographic_filter.rbs
 model/operator_recipient.rbs
+model/pnp_message_template_body.rbs
+model/pnp_message_template_body_button.rbs
+model/pnp_message_template_body_emphasized_item.rbs
+model/pnp_message_template_body_item.rbs
+model/pnp_message_template_request.rbs
 model/pnp_messages_request.rbs
 model/postback_action.rbs
 model/push_message_request.rbs

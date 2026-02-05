@@ -1718,13 +1718,13 @@ module Line
             | String? # otherwise
           )
 
-          # Send LINE notification message
+          # Send LINE notification message (flexible)
           # This requests to <code>POST https://api.line.me/bot/pnp/push</code>
           # This returns an array containing response, HTTP status code, and header in order. Please specify all header keys in lowercase.
           #
           # @param pnp_messages_request [PnpMessagesRequest] 
           # @param x_line_delivery_tag [String, nil] String returned in the delivery.data property of the delivery completion event via Webhook.
-          # @see https://developers.line.biz/en/reference/partner-docs/#send-line-notification-message
+          # @see https://developers.line.biz/en/reference/line-notification-messages/#send-line-notification-message-flexible
           # @return [Array((String|nil), Integer, Hash{String => String})] when HTTP status code is 200
           # @return [Array(Line::Bot::V2::MessagingApi::ErrorResponse, Integer, Hash{String => String})] when HTTP status code is 422
           # @return [Array((String|nil), Integer, Hash{String => String})] when other HTTP status code is returned. String is HTTP response body itself.
@@ -1737,18 +1737,56 @@ module Line
             | [String?, Integer, Hash[untyped, untyped]] # otherwise
           )
 
-          # Send LINE notification message
+          # Send LINE notification message (flexible)
           # This requests to <code>POST https://api.line.me/bot/pnp/push</code>
           # When you want to get HTTP status code or response headers, use {#push_messages_by_phone_with_http_info} instead of this.
           #
           # @param pnp_messages_request [PnpMessagesRequest] 
           # @param x_line_delivery_tag [String, nil] String returned in the delivery.data property of the delivery completion event via Webhook.
-          # @see https://developers.line.biz/en/reference/partner-docs/#send-line-notification-message
+          # @see https://developers.line.biz/en/reference/line-notification-messages/#send-line-notification-message-flexible
           # @return [String, nil] when HTTP status code is 200
           # @return [Line::Bot::V2::MessagingApi::ErrorResponse] when HTTP status code is 422
           # @return [String, nil] when other HTTP status code is returned. This String is HTTP response body itself.
           def push_messages_by_phone: (
             pnp_messages_request: PnpMessagesRequest, 
+            ?x_line_delivery_tag: String?
+          ) -> (
+            String? # when HTTP status code is 200
+            | ErrorResponse # when HTTP status code is 422
+            | String? # otherwise
+          )
+
+          # Send LINE notification message (template)
+          # This requests to <code>POST https://api.line.me/v2/bot/message/pnp/templated/push</code>
+          # This returns an array containing response, HTTP status code, and header in order. Please specify all header keys in lowercase.
+          #
+          # @param pnp_message_template_request [PnpMessageTemplateRequest] 
+          # @param x_line_delivery_tag [String, nil] String returned in the delivery.data property of the delivery completion event via Webhook.
+          # @see https://developers.line.biz/en/reference/line-notification-messages/#send-line-notification-message-template
+          # @return [Array((String|nil), Integer, Hash{String => String})] when HTTP status code is 200
+          # @return [Array(Line::Bot::V2::MessagingApi::ErrorResponse, Integer, Hash{String => String})] when HTTP status code is 422
+          # @return [Array((String|nil), Integer, Hash{String => String})] when other HTTP status code is returned. String is HTTP response body itself.
+          def push_notification_template_with_http_info: (
+            pnp_message_template_request: PnpMessageTemplateRequest, 
+            ?x_line_delivery_tag: String?
+          ) -> (
+            [String?, 200, Hash[untyped, untyped]] # when HTTP status code is 200
+            | [ErrorResponse, 422, Hash[untyped, untyped]] # when HTTP status code is 422
+            | [String?, Integer, Hash[untyped, untyped]] # otherwise
+          )
+
+          # Send LINE notification message (template)
+          # This requests to <code>POST https://api.line.me/v2/bot/message/pnp/templated/push</code>
+          # When you want to get HTTP status code or response headers, use {#push_notification_template_with_http_info} instead of this.
+          #
+          # @param pnp_message_template_request [PnpMessageTemplateRequest] 
+          # @param x_line_delivery_tag [String, nil] String returned in the delivery.data property of the delivery completion event via Webhook.
+          # @see https://developers.line.biz/en/reference/line-notification-messages/#send-line-notification-message-template
+          # @return [String, nil] when HTTP status code is 200
+          # @return [Line::Bot::V2::MessagingApi::ErrorResponse] when HTTP status code is 422
+          # @return [String, nil] when other HTTP status code is returned. This String is HTTP response body itself.
+          def push_notification_template: (
+            pnp_message_template_request: PnpMessageTemplateRequest, 
             ?x_line_delivery_tag: String?
           ) -> (
             String? # when HTTP status code is 200
